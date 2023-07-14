@@ -4,23 +4,51 @@ import { BaseDatabase } from "./BaseDatabase";
 export class UserDatabase extends BaseDatabase {
   public static TABLE_USERS = "users"
 
-  public insertUser = async (
-    userDB: UserDB
-  ): Promise<void> => {
-    await BaseDatabase
-      .connection(UserDatabase.TABLE_USERS)
-      .insert(userDB)
+  public async findUsers(
+    q: string | undefined
+  ): Promise<UserDB[]> {
+    let usersDB
+
+    if (q) {
+      const result: UserDB[] = await BaseDatabase
+        .connection(UserDatabase.TABLE_USERS)
+        .where("name", "LIKE", `%${q}%`)
+
+      usersDB = result
+    } else {
+      const result: UserDB[] = await BaseDatabase
+        .connection(UserDatabase.TABLE_USERS)
+
+      usersDB = result
+    }
+    return usersDB
   }
 
-  public findUserByEmail = async (
-    email: string
-  ): Promise<UserDB | undefined> => {
-    // const [userDB]: Array<UserDB | undefined> = ...
-    const [userDB] = await BaseDatabase
+  public async findUserById(
+    id: string
+  ): Promise<UserDB | undefined> {
+    const [userDB]: UserDB[] | undefined[] = await BaseDatabase
       .connection(UserDatabase.TABLE_USERS)
-      .select()
+      .where({ id })
+
+    return userDB
+  }
+
+  public async findUserByEmail(
+    email: string
+  ): Promise<UserDB | undefined> {
+    const [userDB]: UserDB[] | undefined[] = await BaseDatabase
+      .connection(UserDatabase.TABLE_USERS)
       .where({ email })
 
-    return userDB as UserDB | undefined
+    return userDB
+  }
+
+  public async insertUser(
+    newUserDB: UserDB
+  ): Promise<void> {
+    await BaseDatabase
+      .connection(UserDatabase.TABLE_USERS)
+      .insert(newUserDB)
   }
 }

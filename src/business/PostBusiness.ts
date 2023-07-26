@@ -239,7 +239,7 @@ export class PostBusiness {
         await this.postDatabase.likePost(post[0].id, newNumberOfLikes)
       } else if (isThisUserLiked[0].like) {
         await this.likesDislikesDatabase.deleteLikeUnlike(postId, payload.id)
-
+        
         const newNumberOfLikes = post[0].likes -= 1
         await this.postDatabase.likePost(post[0].id, newNumberOfLikes)
 
@@ -250,7 +250,7 @@ export class PostBusiness {
         const newNumberOfLikes = post[0].likes += 1
         await this.postDatabase.likePost(post[0].id, newNumberOfLikes)
 
-        const newNumberofDislikes = post[0].likes -= 1
+        const newNumberofDislikes = post[0].dislikes -= 1
         await this.postDatabase.unlikePost(post[0].id, newNumberofDislikes)
       }
       return 'Post alterado'
@@ -338,7 +338,7 @@ export class PostBusiness {
         const newNumberOfLikes = comment[0].likes += 1
         await this.postDatabase.likeComment(comment[0].id, newNumberOfLikes)
 
-        const newNumberofDislikes = comment[0].likes -= 1
+        const newNumberofDislikes = comment[0].dislikes -= 1
         await this.postDatabase.unlikeComment(comment[0].id, newNumberofDislikes)
       }
       return 'Post alterado'

@@ -15,10 +15,10 @@ export class LikesDislikesDatabase extends BaseDatabase {
     return LikesDislikes
   }
 
-  public async getLikedPostById(userId: string, postId: string): Promise<LikesDislikesDB[]> {
+  public async getLikedPostById(user_id: string, post_id: string): Promise<LikesDislikesDB[]> {
     const result: LikesDislikesDB[] = await BaseDatabase
     .connection(LikesDislikesDatabase.TABLE_LIKES_DISLIKES)
-    .where({user_id: userId, post_id: postId})
+    .where({user_id, post_id})
 
     return result
   }

@@ -37,18 +37,18 @@ export class LikesDislikesDatabase extends BaseDatabase {
       .insert(post)    
   }
 
-  public async updatePost(postId: string, value: boolean) {
+  public async updatePost(post_id: string, like: boolean, user_id: string) {
     await BaseDatabase
       .connection(LikesDislikesDatabase.TABLE_LIKES_DISLIKES)
-      .update({like: value})
-      .where({post_id: postId})
+      .update({like})
+      .where({post_id, user_id})
   }
 
-  public async deleteLikeUnlike(post_id: string) {
+  public async deleteLikeUnlike(post_id: string, user_id: string) {
     await BaseDatabase
       .connection(LikesDislikesDatabase.TABLE_LIKES_DISLIKES)
       .delete()
-      .where({post_id: post_id})
+      .where({post_id, user_id})
   }
 
   

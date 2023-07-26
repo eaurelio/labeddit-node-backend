@@ -54,7 +54,7 @@ export class PostBusiness {
   //   return output
   // }
 
-  public getPosts = async (input: any) : Promise<any> => {
+  public getPosts = async (input: any): Promise<any> => {
     const { token } = input
 
     const payload = this.tokenManager.getPayload(token)
@@ -67,20 +67,20 @@ export class PostBusiness {
 
     const userDatabase = new UserDatabase()
 
-    async function getUserName (id : any)  {
+    async function getUserName(id: any) {
       const name = await userDatabase.findUserById(id)
       return name?.name
     }
 
-    const output = Promise.all(postsDB.map(async(post) => {
+    const output = Promise.all(postsDB.map(async (post) => {
       const userName = await getUserName(post.creator_id)
-      return {...post, userName}
+      return { ...post, userName }
     }))
 
     return output
   }
 
-  public getComments = async (input: any) : Promise<any> => {
+  public getComments = async (input: any): Promise<any> => {
     const { token, postId } = input
 
     const payload = this.tokenManager.getPayload(token)
@@ -94,14 +94,14 @@ export class PostBusiness {
 
     const userDatabase = new UserDatabase()
 
-    async function getUserName (id : any)  {
+    async function getUserName(id: any) {
       const name = await userDatabase.findUserById(id)
       return name?.name
     }
 
-    const output = Promise.all(postsDB.map(async(post) => {
+    const output = Promise.all(postsDB.map(async (post) => {
       const userName = await getUserName(post.user_id)
-      return {...post, userName}
+      return { ...post, userName }
     }))
 
     return output
@@ -238,18 +238,18 @@ export class PostBusiness {
         const newNumberOfLikes = post[0].likes += 1
         await this.postDatabase.likePost(post[0].id, newNumberOfLikes)
       } else if (isThisUserLiked[0].like) {
-        await this.likesDislikesDatabase.deleteLikeUnlike(postId)
-        
+        await this.likesDislikesDatabase.deleteLikeUnlike(postId, payload.id)
+
         const newNumberOfLikes = post[0].likes -= 1
         await this.postDatabase.likePost(post[0].id, newNumberOfLikes)
 
-      } 
+      }
       else {
-        await this.likesDislikesDatabase.updatePost(postId, true)
+        await this.likesDislikesDatabase.updatePost(postId, true, payload.id)
 
         const newNumberOfLikes = post[0].likes += 1
         await this.postDatabase.likePost(post[0].id, newNumberOfLikes)
-        
+
         const newNumberofDislikes = post[0].likes -= 1
         await this.postDatabase.unlikePost(post[0].id, newNumberofDislikes)
       }
@@ -268,14 +268,14 @@ export class PostBusiness {
         const newNumberOfDislikes = post[0].dislikes += 1
         await this.postDatabase.unlikePost(post[0].id, newNumberOfDislikes)
       } else if (!isThisUserLiked[0].like) {
-        await this.likesDislikesDatabase.deleteLikeUnlike(postId)
+        await this.likesDislikesDatabase.deleteLikeUnlike(postId, payload.id)
 
         const newNumberOfDislikes = post[0].dislikes -= 1
         await this.postDatabase.unlikePost(post[0].id, newNumberOfDislikes)
 
-      } 
+      }
       else {
-        await this.likesDislikesDatabase.updatePost(postId, false)
+        await this.likesDislikesDatabase.updatePost(postId, false, payload.id)
 
         const newNumberOfLikes = post[0].likes -= 1
         await this.postDatabase.likePost(post[0].id, newNumberOfLikes)
@@ -325,19 +325,19 @@ export class PostBusiness {
       }
       // Interação de like existe - Vira unlike
       else if (isThisUserLiked[0].like) {
-        await this.likesDislikesDatabase.deleteLikeUnlike(commentId)
-        
+        await this.likesDislikesDatabase.deleteLikeUnlike(commentId, payload.id)
+
         const newNumberOfLikes = comment[0].likes -= 1
         await this.postDatabase.likeComment(comment[0].id, newNumberOfLikes)
 
-      } 
+      }
       // Interação de unlike existe - Vira like
       else {
-        await this.likesDislikesDatabase.updatePost(commentId, true)
+        await this.likesDislikesDatabase.updatePost(commentId, true, payload.id)
 
         const newNumberOfLikes = comment[0].likes += 1
         await this.postDatabase.likeComment(comment[0].id, newNumberOfLikes)
-        
+
         const newNumberofDislikes = comment[0].likes -= 1
         await this.postDatabase.unlikeComment(comment[0].id, newNumberofDislikes)
       }
@@ -345,7 +345,7 @@ export class PostBusiness {
     }
 
     if (!like) {
-       // Interação não existe
+      // Interação não existe
       if (isThisUserLiked.length === 0) {
         const newLike = {
           user_id: payload.id,
@@ -356,17 +356,17 @@ export class PostBusiness {
 
         const newNumberOfDislikes = comment[0].dislikes += 1
         await this.postDatabase.unlikeComment(comment[0].id, newNumberOfDislikes)
-      } 
+      }
       // Interação de unlike existe - Vira like
       else if (!isThisUserLiked[0].like) {
-        await this.likesDislikesDatabase.deleteLikeUnlike(commentId)
+        await this.likesDislikesDatabase.deleteLikeUnlike(commentId, payload.id)
 
         const newNumberOfDislikes = comment[0].dislikes -= 1
         await this.postDatabase.unlikeComment(comment[0].id, newNumberOfDislikes)
-      } 
+      }
       // Interação de like existe - Vira unlike
       else {
-        await this.likesDislikesDatabase.updatePost(commentId, false)
+        await this.likesDislikesDatabase.updatePost(commentId, false, payload.id)
 
         const newNumberOfLikes = comment[0].likes -= 1
         await this.postDatabase.likeComment(comment[0].id, newNumberOfLikes)

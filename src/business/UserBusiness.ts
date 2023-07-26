@@ -59,14 +59,13 @@ export class UserBusiness {
     input: SignupInputDTO
   ): Promise<SignupOutputDTO> => {
     const { name, email, password } = input
-    // console.log(name, email, password)
 
     const id = this.idGenerator.generate()
 
-    const userDBExists = await this.userDatabase.findUserByEmail(email)
+    const userDBExists = await this.userDatabase.findUserById(id)
 
     if (userDBExists) {
-      throw new BadRequestError("usuário já existe")
+      throw new BadRequestError("'id' já existe")
     }
 
     const hashedPassword = await this.hashManager.hash(password)

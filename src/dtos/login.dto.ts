@@ -7,7 +7,8 @@ export interface LoginInputDTO {
 
 export interface LoginOutputDTO {
   message: string,
-  token: string
+  token: string,
+  userName: string
 }
 
 export const LoginSchema = z.object({

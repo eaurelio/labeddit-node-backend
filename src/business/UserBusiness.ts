@@ -135,7 +135,8 @@ export class UserBusiness {
 
     const output: LoginOutputDTO = {
       message: "Login realizado com sucesso",
-      token
+      token,
+      userName: payload.name
     }
 
     return output

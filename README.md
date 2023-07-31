@@ -13,6 +13,7 @@ O Labook é uma rede social com o objetivo de promover a conexão e interação 
 - IDs geradas via UUID
 - Segurança - Geração de senhas hasheadas
 - Autenticação e autorização
+- Deploy realizado no webservice [Render](https://render.com)
 
 # Postman
 

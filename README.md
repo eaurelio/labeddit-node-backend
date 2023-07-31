@@ -1,5 +1,5 @@
-# Projeto Labook
-O Labook é uma rede social com o objetivo de promover a conexão e interação entre pessoas. Quem se cadastrar no aplicativo poderá criar e curtir publicações.
+# Projeto Labeddit
+O Labook é uma rede social com o objetivo de promover a conexão e interação entre pessoas. Quem se cadastrar no aplicativo poderá criar, curtir e comentar publicações.
 
 # Tecnologias utilizadas
 - NodeJS
@@ -16,12 +16,7 @@ O Labook é uma rede social com o objetivo de promover a conexão e interação 
 
 # Postman
 
-[Clique aqui para ver a documentação no Postman](https://documenter.getpostman.com/view/24823115/2s93sW9vui)
-
-# Banco de dados
-![projeto-labook (2)](https://user-images.githubusercontent.com/29845719/216036534-2b3dfb48-7782-411a-bffd-36245b78594e.png)
-
-https://dbdiagram.io/d/63d16443296d97641d7c1ae1
+[Clique aqui para ver a documentação no Postman](https://documenter.getpostman.com/view/24823115/2s9XxtzbGD)
 
 # Datalhes da API
 
@@ -33,6 +28,8 @@ https://dbdiagram.io/d/63d16443296d97641d7c1ae1
     - edit post
     - delete post
     - like / dislike post
+    - Create comment
+    - like / dislike comment
 
 - Recursos
     -  Autenticação e autorização
@@ -77,7 +74,8 @@ Endpoint público utilizado para login. Devolve um token jwt.
 // response
 // status 200 OK
 {
-  token: "um token jwt"
+  token: "um token jwt",
+  userName: "nome_de_usuario"
 }
 ```
 
@@ -191,4 +189,36 @@ Caso dê um dislike em um post que tenha dado like, o dislike sobrescreve o like
 // response
 // status 200 OK
 ```
+## Like or dislike comment (mesmo endpoint faz as duas coisas)
 
+Endpoint protegido, requer um token jwt para acessá-lo.<br>
+Quem criou o post não pode dar like ou dislike no mesmo.<br><br>
+Caso dê um like em um post que já tenha dado like, o like é desfeito.<br>
+Caso dê um dislike em um post que já tenha dado dislike, o dislike é desfeito.<br><br>
+Caso dê um like em um post que tenha dado dislike, o like sobrescreve o dislike.<br>
+Caso dê um dislike em um post que tenha dado like, o dislike sobrescreve o like.
+### Like (funcionalidade 1)
+```typescript
+// request PUT /posts/:id/like
+// headers.authorization = "token jwt"
+// body JSON
+{
+    "like": true
+}
+
+// response
+// status 200 OK
+```
+
+### Dislike (funcionalidade 2)
+```typescript
+// request PUT /posts/:id/like
+// headers.authorization = "token jwt"
+// body JSON
+{
+    "like": false
+}
+
+// response
+// status 200 OK
+```
